@@ -1,14 +1,14 @@
 // An AVL tree implementation
 public class AVLTree<Key extends Comparable<Key>, Value> {
 
-    private Node root;  // root of the AVL tree
+    private Node root; // root of the AVL tree
 
     // A node of the AVL tree
     private class Node {
-        private Key key;           // key of the node
-        private Value value;       // value of the node
-        private Node left, right;  // left and right subtrees of the node
-        private int height;        // height of the node
+        private Key key; // key of the node
+        private Value value; // value of the node
+        private Node left, right; // left and right subtrees of the node
+        private int height; // height of the node
 
         public Node(Key key, Value value) {
             this.key = key;
@@ -63,14 +63,12 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
                 node.left = rotateLeft(node.left);
             }
             node = rotateRight(node);
-        }
-        else if (balanceFactor(node) < -1) {
+        } else if (balanceFactor(node) < -1) {
             if (balanceFactor(node.right) > 0) {
                 node.right = rotateRight(node.right);
             }
             node = rotateLeft(node);
-        }
-        else {
+        } else {
             node.height = 1 + Math.max(height(node.left), height(node.right));
         }
         return node;
@@ -84,6 +82,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         }
         return node.value;
     }
+
     // Returns the node associated with the given key
     private Node get(Node node, Key key) {
         if (node == null) {
@@ -92,11 +91,9 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         int cmp = key.compareTo(node.key);
         if (cmp < 0) {
             return get(node.left, key);
-        }
-        else if (cmp > 0) {
+        } else if (cmp > 0) {
             return get(node.right, key);
-        }
-        else {
+        } else {
             return node;
         }
     }
@@ -109,7 +106,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
     // Inserts the key-value pair into the subtree rooted at the given node
     private Node put(Node node, Key key, Value value) {
         if (node == null) {
-            return new Node(key,value);
+            return new Node(key, value);
         }
 
         int cmp = key.compareTo(node.key);
