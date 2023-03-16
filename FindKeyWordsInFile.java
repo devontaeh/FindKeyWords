@@ -6,19 +6,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Map.Entry;
+
+import javax.print.DocFlavor.STRING;
 
 public class FindKeyWordsInFile {
-
-
-
 
     public static AVLTree<String, Integer> computeWordFrequencies(String[] wordStrings) {
 
         AVLTree<String, Integer> wordFrequencies = new AVLTree<>();
-      
+
         for (String word : wordStrings) {
             if (wordFrequencies.get(word) != null) {
                 int frequency = wordFrequencies.get(word) + 1;
@@ -28,7 +34,6 @@ public class FindKeyWordsInFile {
             }
 
         }
-
 
         return wordFrequencies;
     }
@@ -51,60 +56,35 @@ public class FindKeyWordsInFile {
         AVLTree<String, Integer> wordFrequencies = new AVLTree<>();
         AVLTree<String, Void> englishWords = new AVLTree<>();
         AVLTree<String, Integer> keywordFrequencies = new AVLTree<>();
+        PriorityQueue<Map.Entry<Integer, String>> mostFrrequent = new PriorityQueue<>(
+                Map.Entry.comparingByKey(Comparator.reverseOrder()));
+        Hashtable<String, Integer> frequencyVal = new Hashtable<>();
 
-        inputFileFileName = inputFileFileName.toLowerCase().replaceAll("[^a-z']", " ").replaceAll(" +", " ");
+        inputFileFileName = inputFileFileName.toLowerCase().replaceAll("[^a-z'-]", " ").replaceAll(" +", " ");
         String[] words = inputFileFileName.split(" ");
 
         try {
 
             // count frequencies
 
-          
             // inputFileFileName = inputFileFileName.;
             // System.out.println(inputFileFileName);
 
-            
             // Part 1
             // function name => computeWordFrequencies
-            
+
             wordFrequencies = computeWordFrequencies(words);
-            wordFrequencies.inOrderTraversal();
+            mostFrrequent = wordFrequencies.inOrderTraversal(wordFrequencies.root, mostFrrequent);
 
+            // System.out.println(mostFrrequent);
+            for (int i = 0; i < k; i++) {
+                Entry<Integer, String> max = mostFrrequent.poll();
+                System.out.println(max + "\n");
+                System.out.println(mostFrrequent);
 
-
-            // for (String word : words) {
-            //     if (wordFrequencies.get(word) != null) {
-            //         int frequency = wordFrequencies.get(word) + 1;
-            //         wordFrequencies.put(word, frequency);
-            //     } else {
-            //         wordFrequencies.put(word, 1);
-            //     }
-
-            // }
-
-            // System.out.println(words);
-            // System.out.println(words);
-
-            // check if the string has non alphabetical characters
-            // check if string has an alphahbectical characters -> 10,000 not a word
-            // for (int i = 0; i < word.length() - 1; i++) {
-            // String omissionWord = word.toLowerCase();
-            // omissionWord = omissionWord.substring(0, i) + omissionWord.substring(i + 1);
-            // if (checkSpelling(omissionWord)) {
-            // wordList.add(omissionWord);
-            // }
-            // }
-
-            // if (wordFrequencies.get(word) != null) {
-            // int frequency = wordFrequencies.get(word) + 1;
-            // wordFrequencies.put(word, frequency);
-            // } else {
-            // wordFrequencies.put(word, 1);
+            }
 
             // wordFrequencies = computeWordFrequencies(inputFileFileName);
-            
-
-       
 
             // Part 2
             // function name => findKMostFrequentWords
@@ -115,5 +95,9 @@ public class FindKeyWordsInFile {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static int frequencyVal(int i) {
+        return 0;
     }
 }

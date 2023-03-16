@@ -1,14 +1,22 @@
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.PriorityQueue;
+
 // An AVL tree implementation
 public class AVLTree<Key extends Comparable<Key>, Value> {
 
-    private Node root; // root of the AVL tree
+    public Node root; // root of the AVL tree
+    public Node left;
+    public Node right; 
 
     // A node of the AVL tree
     private class Node {
-        private Key key; // key of the node
-        private Value value; // value of the node
-        private Node left, right; // left and right subtrees of the node
-        private int height; // height of the node
+        public Key key; // key of the node
+        public Value value; // value of the node
+        public Node left, right; // left and right subtrees of the node
+        public int height; // height of the node
 
         public Node(Key key, Value value) {
             this.key = key;
@@ -16,6 +24,10 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
             this.height = 1;
         }
     }
+
+    // public Node getRoot(){
+    //     return root;
+    // }
 
     // Returns the height of the node (or 0 if node is null)
     private int height(Node node) {
@@ -124,13 +136,68 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         return node;
     }
 
-    private void inOrderTraversal(Node node) {
+    // public Hashtable<Key, Value> inOrderTraversal(Node node, Hashtable<Key,Value> hashtable) {
+    //     // Hashtable<Value,Key> hashtable = new Hashtable<>();
+
+    //     if (node != null) {
+    //         inOrderTraversal(node.left, hashtable) ;
+    //         System.out.println(node.key + " " + node.value);
+    //         // System.out.println(node.value);
+    //         // if
+    //         hashtable.put(node.key,node.value);
+    //         inOrderTraversal(node.right,hashtable);
+            
+    //         // inOrderTraversal(node.right);
+    //     }
+        
+    //     // System.out.println(hashtable);
+
+    //     return hashtable;
+    // }
+
+    
+    public PriorityQueue<Map.Entry<Value,Key>> inOrderTraversal(Node node,PriorityQueue<Map.Entry<Value,Key>> hashtable) {
+        // Hashtable<Value,Key> hashtable = new Hashtable<>();
+
         if (node != null) {
-            inOrderTraversal(node.left);
+
+            
+            inOrderTraversal(node.left, hashtable) ;
             System.out.println(node.key + " " + node.value);
-            inOrderTraversal(node.right);
+            hashtable.add(new AbstractMap.SimpleEntry<>(node.value, node.key));
+
+            inOrderTraversal(node.right,hashtable);
+            // System.out.println(node.value);
+            // if
+           
+      
+            
+            // inOrderTraversal(node.right);
         }
+        
+        // System.out.println(hashtable);
+
+        return hashtable;
     }
+
+    private void inOrderTraversal(Node node) {
+ 
+
+        if (node != null) {
+            inOrderTraversal(node.left) ;
+            System.out.println(node.key + " " + node.value);
+            // System.out.println(node.value);
+
+            inOrderTraversal(node.right);
+            
+            // inOrderTraversal(node.right);
+        }
+        
+        // System.out.println(hashtable);
+
+        
+    }
+
 
     // Call this method from main:
     public void inOrderTraversal() {
