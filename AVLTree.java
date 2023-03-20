@@ -3,20 +3,19 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Map.Entry;
 
 // An AVL tree implementation
 public class AVLTree<Key extends Comparable<Key>, Value> {
 
     public Node root; // root of the AVL tree
-    public Node left;
-    public Node right; 
 
     // A node of the AVL tree
     private class Node {
-        public Key key; // key of the node
-        public Value value; // value of the node
-        public Node left, right; // left and right subtrees of the node
-        public int height; // height of the node
+        private Key key; // key of the node
+        private Value value; // value of the node
+        private Node left, right; // left and right subtrees of the node
+        private int height; // height of the node
 
         public Node(Key key, Value value) {
             this.key = key;
@@ -26,7 +25,7 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
     }
 
     // public Node getRoot(){
-    //     return root;
+    // return root;
     // }
 
     // Returns the height of the node (or 0 if node is null)
@@ -136,68 +135,96 @@ public class AVLTree<Key extends Comparable<Key>, Value> {
         return node;
     }
 
-    // public Hashtable<Key, Value> inOrderTraversal(Node node, Hashtable<Key,Value> hashtable) {
-    //     // Hashtable<Value,Key> hashtable = new Hashtable<>();
+    // public Hashtable<Key, Value> inOrderTraversal(Node node, Hashtable<Key,Value>
+    // hashtable) {
+    // // Hashtable<Value,Key> hashtable = new Hashtable<>();
 
-    //     if (node != null) {
-    //         inOrderTraversal(node.left, hashtable) ;
-    //         System.out.println(node.key + " " + node.value);
-    //         // System.out.println(node.value);
-    //         // if
-    //         hashtable.put(node.key,node.value);
-    //         inOrderTraversal(node.right,hashtable);
-            
-    //         // inOrderTraversal(node.right);
-    //     }
-        
-    //     // System.out.println(hashtable);
+    // if (node != null) {
+    // inOrderTraversal(node.left, hashtable) ;
+    // System.out.println(node.key + " " + node.value);
+    // // System.out.println(node.value);
+    // // if
+    // hashtable.put(node.key,node.value);
+    // inOrderTraversal(node.right,hashtable);
 
-    //     return hashtable;
+    // // inOrderTraversal(node.right);
     // }
 
-    
-    public PriorityQueue<Map.Entry<Value,Key>> inOrderTraversal(Node node,PriorityQueue<Map.Entry<Value,Key>> hashtable) {
+    // // System.out.println(hashtable);
+
+    // return hashtable;
+    // }
+
+    public PriorityQueue<Map.Entry<Value, Key>> findKMostFrequentWords(Node node,
+            PriorityQueue<Map.Entry<Value, Key>> queue) {
         // Hashtable<Value,Key> hashtable = new Hashtable<>();
 
         if (node != null) {
 
-            
-            inOrderTraversal(node.left, hashtable) ;
+            findKMostFrequentWords(node.left, queue);
             System.out.println(node.key + " " + node.value);
-            hashtable.add(new AbstractMap.SimpleEntry<>(node.value, node.key));
+            queue.add(new AbstractMap.SimpleEntry<>(node.value, node.key));
 
-            inOrderTraversal(node.right,hashtable);
+            findKMostFrequentWords(node.right, queue);
             // System.out.println(node.value);
             // if
-           
-      
-            
+
             // inOrderTraversal(node.right);
         }
-        
+
         // System.out.println(hashtable);
 
-        return hashtable;
+        return queue;
     }
+
+    
 
     private void inOrderTraversal(Node node) {
- 
 
         if (node != null) {
-            inOrderTraversal(node.left) ;
-            System.out.println(node.key + " " + node.value);
-            // System.out.println(node.value);
+            inOrderTraversal(node.left);
+            System.out.println(node.key);
 
             inOrderTraversal(node.right);
-            
+
             // inOrderTraversal(node.right);
         }
-        
+
         // System.out.println(hashtable);
 
-        
     }
 
+    public ArrayList<Map.Entry<Value, Key>> filterCommons(Node node, PriorityQueue<Map.Entry<Value, Key>> queue,
+            int k) {
+
+        ArrayList<Map.Entry<Value, Key>> wordsPresent = new ArrayList<>();
+
+        for (int i = 0; i < k; i++) {
+
+            if (node != null) {
+                inOrderTraversal(node.left);
+                System.out.println(node.key + " " + node.value);
+
+                if (queue.peek().getValue() == node.key) {
+                    wordsPresent.add(queue.peek());
+                    break;
+                }
+                // System.out.println(node.value);
+
+                inOrderTraversal(node.right);
+
+                // inOrderTraversal(node.right);
+            }
+
+            queue.poll();
+
+        }
+
+        // System.out.println(hashtable);
+
+        return wordsPresent;
+
+    }
 
     // Call this method from main:
     public void inOrderTraversal() {
