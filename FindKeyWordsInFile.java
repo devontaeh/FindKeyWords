@@ -4,6 +4,7 @@
 // import java.io.FileInputStream;
 // import java.io.FileReader;
 import java.io.IOException;
+import java.lang.invoke.WrongMethodTypeException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,8 +18,11 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 // import java.util.Scanner;
 import java.util.Map.Entry;
+
+import javax.print.DocFlavor.STRING;
 
 public class FindKeyWordsInFile {
 
@@ -27,21 +31,32 @@ public class FindKeyWordsInFile {
         AVLTree<String, Integer> wordFrequencies = new AVLTree<>();
 
         for (String word : wordStrings) {
-            if (wordFrequencies.get(word) != null) {
-                int frequency = wordFrequencies.get(word) + 1;
-                wordFrequencies.put(word, frequency);
-            } else {
-                wordFrequencies.put(word, 1);
+
+            Integer count = wordFrequencies.get(word);
+
+            if (count == null) {
+                count = 0;
             }
+            count++;
+
+            wordFrequencies.put(word, count);
+
+            // if (wordFrequencies.get(word) != null) {
+            // int frequency = wordFrequencies.get(word) + 1;
+            // wordFrequencies.put(word, frequency);
+            // } else {
+            // wordFrequencies.put(word, 1);
+            // }
         }
         return wordFrequencies;
 
     }
 
-    public static AVLTree<String, Void> frequentWords(String[] wordStrings) {
-        AVLTree<String, Void> tree = new AVLTree<>();
-        // AVLTree<String, Void> nonDiscard = new AVLTree<>();
-        // ArrayList<Entry<String, Integer>> list = new ArrayList<>();
+    public static AVLTree<String, Integer> frequentWords(String[] wordStrings, ArrayList<String> list,
+            PriorityQueue<Map.Entry<Integer, String>> queue, int k) {
+
+        AVLTree<String, Integer> tree = new AVLTree<>();
+        AVLTree<String, Integer> tree2 = new AVLTree<>();
 
         for (String word : wordStrings) {
             // System.out.println(word);
@@ -50,7 +65,19 @@ public class FindKeyWordsInFile {
 
         }
 
-        return tree;
+        tree.filterCommons(tree.root, queue, k);
+
+        System.out.println(queue);
+
+        while (queue.peek() != null) {
+            Entry<Integer, String> head = queue.poll();
+
+            tree2.put(head.getValue(), head.getKey());
+            System.out.println(head + "\n");
+
+        }
+        tree2.inOrderTraversal();
+        return tree2;
     }
 
     public static void main(String[] args) throws IOException {
@@ -69,17 +96,21 @@ public class FindKeyWordsInFile {
         inputFileFileName = inputFileFileName.toLowerCase().replaceAll("[^a-z'-]", " ").replaceAll(" +", " ");
         String[] words = inputFileFileName.split(" ");
 
-        String[] englishWordsS = englishWordsFileName.split(" ");
+        String[] englishWordsS = englishWordsFileName.split("\\r?\\n");
+
+        // System.out.println("the word is " + word);
+
+        // }
 
         // System.out.println(inputFileFileName);
 
         AVLTree<String, Integer> wordFrequencies = new AVLTree<>();
-        AVLTree<String, Void> englishWords = new AVLTree<>();
+        // AVLTree<String, Integer> englishWords = new AVLTree<>();
         AVLTree<String, Integer> keywordFrequencies = new AVLTree<>();
         PriorityQueue<Map.Entry<Integer, String>> mostFrequent = new PriorityQueue<>(
                 Map.Entry.comparingByKey(Comparator.reverseOrder()));
         Hashtable<String, Integer> frequencyVal = new Hashtable<>();
-        ArrayList<Entry<String, Void>> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
 
         try {
 
@@ -95,20 +126,18 @@ public class FindKeyWordsInFile {
             wordFrequencies.inOrderTraversal();
 
             mostFrequent = wordFrequencies.findKMostFrequentWords(wordFrequencies.root, mostFrequent);
-            englishWords = frequentWords(englishWordsS);
+
+            AVLTree<String, Integer> englishWords = frequentWords(englishWordsS, list, mostFrequent, k);
+
             englishWords.inOrderTraversal();
 
-            list = englishWords.filterCommons(englishWords.root, mostFrequent, k);
+            // System.out.println(mostFrequent);
 
-            // System.out.println(mostFrrequent);
-            // for (int i = 0; i < k; i++) {
-            // Entry<Integer, String> max = mostFrrequent.poll();
-            // System.out.println(max + "\n");
-            // System.out.println(mostFrrequent);
+            // list = englishWords.filterCommons(englishWords.root, list, mostFrequent, k);
 
-            // }
-
-            // wordFrequencies = computeWordFrequencies(inputFileFileName);
+            for (String word : list) {
+                System.out.println(word);
+            }
 
             // Part 2
             // function name => findKMostFrequentWords
